@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Javascript External Script</title>
+
+</head>
+<body>
+
+<script >
+
+function replace(lst){
+
+		sym=[];
+		sym[1]='&';
+		sym[2]='v';
+		sym[3]='~';
+		sym[4]='>';
+		sym[5]='=';
+		sym[6]='|';
+		sym[7]='!';
+		sym[8]='+';
+
+		sym_inv=[];
+		sym_inv[1]='K';
+		sym_inv[2]='A';
+		sym_inv[3]='N';
+		sym_inv[4]='C';
+		sym_inv[5]='E';
+		sym_inv[6]='D';
+		sym_inv[7]='P';
+		sym_inv[8]='S';
+
+
+		news=[];
+				
+		
+
+		for (var i=0; i<lst.length; i++){
+
+			if (sym.indexOf(lst[i])!=-1){
+				news = news + sym_inv[sym.indexOf(lst[i])]; 
+			}
+			else {
+				news = news + lst[i];
+			}
+		}
+		
+        return news;
+}
+
+
+function revpolish(formula){
+
+	strletters='QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcbnm';
+	letters='QWERTYUIOPASDFGHJKLZXCVBNMqwertyuiopasdfghjklzxcbnm';
+	
+	rank=[];
+	rank[3]=3;
+	rank[1]= 2; 
+	rank[2]= 2;
+	rank[4]= 2;
+	rank[4]= 2;
+	rank[5]= 2;
+	rank[6]= 2;
+	rank[7]= 2;
+	rank[8]= 2;
+	rank['(']= 1;
+	
+
+		
+	sym=[];
+	sym[1]='&';
+	sym[2]='v';
+	sym[3]='~';
+	sym[4]='>';
+	sym[5]='=';
+	sym[6]='|';
+	sym[7]='!';
+	sym[8]='+';
+
+	sym_inv=[];
+	sym_inv[1]='K';
+	sym_inv[2]='A';
+	sym_inv[3]='N';
+	sym_inv[4]='C';
+	sym_inv[5]='E';
+	sym_inv[6]='D';
+	sym_inv[7]='P';
+	sym_inv[8]='S';
+
+
+    tokens = formula;
+    stack=[];
+    out=[];
+	
+	
+	for (var itoken=0; itoken<tokens.length; itoken++) {
+		if (letters.indexOf(tokens[itoken])!=-1) {
+            out=out+tokens[itoken];
+		}
+		if (tokens[itoken] =='(') {
+            stack = stack+tokens[itoken];
+		}
+		
+		if (sym.indexOf(tokens[itoken])!=-1) {
+
+			if  ((stack =='') || (rank[sym.indexOf(tokens[itoken])] > rank[sym.indexOf(stack[stack.length-1])])) {    // # > или >= ???
+				stack = stack+tokens[itoken];
+			}
+			else{
+				count = 0;
+				for (var i=0; i< stack.length; i++){
+					if (rank[sym.indexOf(stack[stack.length-i-1])] > rank[sym.indexOf(tokens[itoken])]){
+						out=out+ stack[stack.length-i-1];
+						count=count+1;
+					}
+					else {
+						break;
+					}
+				}
+				x=0;
+				while (x < count && x!=''){
+					stack=stack.slice(0, -1)
+					x = x+1;
+				}
+            stack=stack+tokens[itoken]
+			}				
+		}
+		
+		if (tokens[itoken] ==')'){
+		
+			x = stack[stack.length-1];
+			stack=stack.slice(0, -1);
+		
+            for (var i=0; i<10; i++){
+				if	(x != '('){
+					out=out+x;
+					x = stack[stack.length-1];
+					stack=stack.slice(0, -1)
+				}else{
+					break;
+				}
+			}
+			
+		}
+
+		
+	}
+
+		
+	for (var i=stack.length-1; i>-1; i--){
+		out=out+stack[i];
+	}
+	
+	out = replace(out);
+    out = ''+ out;
+	return out;
+}
+
+//document.write(revpolish('!(p>(s&W))&q'));
+
+
+</script>
+
+
+<form>
+  <label for="formula">Введите формулу</label><br>
+  <input type="text" id="formula" name="formula"><br>
+   <input type="button" onclick="window.alert(revpolish(document.getElementById('formula').value))" name="ok" value="Перевести">
+</form>
+
+
+</body>
+</html>
